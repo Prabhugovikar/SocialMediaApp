@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@font-face {
+  font-family: "KarlaBold";
+  src: local("KarlaBold"),
+   url("./Fonts/Karla/static/Karla-Bold.ttf") format("truetype");
+  font-weight: bold;
+ }
+
+ @font-face {
+  font-family: "KarlaSemiBold";
+  src: local("KarlaSemiBold"),
+   url("./Fonts/Karla/static/Karla-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+ }
+
+ @font-face {
+  font-family: "KarlaMedium";
+  src: local("KarlaMedium"),
+   url("./Fonts/Karla/static/Karla-Medium.ttf") format("truetype");
+  font-weight: 500;
+ }
+
+ @font-face {
+  font-family: "KarlaRegular";
+  src: local("KarlaRegular"),
+   url("./Fonts/Karla/static/Karla-Regular.ttf") format("truetype");
+  font-weight: 400;
+ }
+
+
+@font-face {
+  font-family: "KumbhSansBold";
+  src: local("KumbhSansBold"),
+   url("./Fonts/Kumbh_Sans/static/KumbhSans-Bold.ttf") format("truetype");
+  font-weight: bold;
+ }
+
+ @font-face {
+  font-family: "KumbhSansSemiBold";
+  src: local("KumbhSansSemiBold"),
+   url("./Fonts/Kumbh_Sans/static/KumbhSans-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+ }
+
+ @font-face {
+  font-family: "KumbhSansMedium";
+  src: local("KumbhSansMedium"),
+   url("./Fonts/Kumbh_Sans/static/KumbhSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+ }
+
+ @font-face {
+  font-family: "KumbhSansRegular";
+  src: local("KumbhSansRegular"),
+   url("./Fonts/Kumbh_Sans/static/KumbhSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+ }

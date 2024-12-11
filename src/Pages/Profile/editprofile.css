@@ -1,0 +1,148 @@
+.editprofile {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.profile-header-container {
+    position: relative;
+}
+
+.profile-header {
+    width: 100%;
+    height: 189px;
+}
+
+.profile-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.profile-edit-banner-pencil {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+    background-color: #F4F4F4;
+   border-radius: 50%;
+   width: 33px;
+   height: 33px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+
+.profile-edit-wrapper {
+    position: relative;
+}
+
+.editprofile-icon-conatiner {
+    position: absolute;
+    bottom: -20px;
+   left: 110px;
+   background-color: #F4F4F4;
+   border-radius: 50%;
+   width: 33px;
+   height: 33px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.profile-header-userprofile {
+    width: 122px;
+    height: 122px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -50px;
+    left:10px;
+}
+
+.user-profile {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+.editprofile-form-wrapper{
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 30px;
+}
+
+.editprofile-input-wrapper {
+display: flex;
+flex-direction: column;
+
+}
+
+.editprofile-input-wrapper>label {
+    font-family: "KumbhSansRegular";
+    font-size: 14px;
+}
+
+.editprofile-input {
+    font-family: "KumbhSansBold";
+    font-size: 14px;
+    padding: 5px;
+    border-bottom: 1px solid #000000;
+    border-top: none;
+    border-left: none;
+    border-left: none;
+    border-right: none;
+    outline: none;
+}
+
+.editprofile-dark {
+    border-bottom: 1px solid #F4F4F4;
+    background: transparent;
+}
+
+.editprofile-save-container {
+    padding-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+.save-button-dark {
+    display: flex;
+    justify-content: center;
+    background-color: #FFFF;
+    color: #000000;
+    padding: 5px 15px;
+    width: 100%;
+    height: 48px;
+    align-items: center;
+    border-radius: 36px;
+    border: none;
+    font-family: "KarlaBold";
+}
+
+
+.save-button-light {
+    display: flex;
+    justify-content: center;
+    background-color: #000000;
+    color: #FFFF;
+    padding: 5px 15px;
+    width: 100%;
+    height: 48px;
+    align-items: center;
+    border-radius: 36px;
+    border: none;
+    font-family: "KarlaBold";
+}

@@ -1,0 +1,23 @@
+.skeleton {
+    width: 158px;
+    height: 192px;
+    border-radius: 12px;
+    background: linear-gradient(
+      90deg,
+      rgba(200, 200, 200, 0.2) 25%,
+      rgba(230, 230, 230, 0.4) 50%,
+      rgba(200, 200, 200, 0.2) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  
+  @keyframes skeleton-loading {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+  

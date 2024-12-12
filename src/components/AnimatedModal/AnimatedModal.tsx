@@ -12,9 +12,6 @@ const AnimatedModal: React.FC<AnimatedModalProps> = ({ isVisible, onClose, child
     <div className={`modal-backdrop ${isVisible ? "visible" : "hidden"}`} onClick={onClose}>
       <div className={`modal-content ${isVisible ? "fade-in" : "fade-out"}`} onClick={(e) => e.stopPropagation()}>
         {children}
-        {/* <button className="close-button" onClick={onClose}>
-          Close
-        </button> */}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './ThemeContext';
@@ -19,16 +19,18 @@ export default function App() {
     <div>
       <ThemeProvider children={undefined}>
         <BrowserRouter>
+        <Suspense fallback={<div className='loader-center'><div className='loader'></div></div>}>
           <Routes>
             <Route index path='/' element={<Login />} />
             <Route element={<Layout />}>
               <Route path='/Feed' element={<UserFeed />} />
               <Route path='/profile' element={<ProfilUser />}/>
               <Route path='/editProfile' element={<EditProfile />}/>
-              <Route path='/CreatePost' element={<CreatePost key='CreatePost'/>} />
+              <Route path='/CreatePost' element={<CreatePost/>} />
               <Route path='/PreviewScreen' element={<PreviewScreen/>}/>
             </Route>
           </Routes>
+          </Suspense>
         </BrowserRouter>
       </ThemeProvider>
     </div>

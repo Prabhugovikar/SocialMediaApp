@@ -44,6 +44,18 @@
   color: red;
 }
 
+.loader-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;   
+  top: 0;
+  left: 0;
+  width: 100vw;     
+  height: 100vh;  
+  z-index: 9999;  
+}
+
 /* HTML: <div class="loader"></div> */
 .loader {
   width: 30px;

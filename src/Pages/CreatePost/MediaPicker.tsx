@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef ,useEffect} from 'react';
 import './Mediapicker.css';
 import { useTheme } from '../../ThemeContext';
 import { useNavigate } from 'react-router-dom';
@@ -87,6 +87,9 @@ const PostScreen: React.FC = () => {
         navigate('/PreviewScreen', { state: { selectedMedia } });
     };
 
+    useEffect(() => {
+        console.log('CreatePost mounted');
+      }, []);
     return (
         <div className="post-container">
 

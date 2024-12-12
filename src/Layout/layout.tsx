@@ -5,12 +5,14 @@ import { useTheme } from '../ThemeContext';
 export default function Layout() {
   const { isDarkMode } = useTheme(); 
   console.log(`isDarkMode`, isDarkMode);
-  useEffect(() => {
-    document.body.className = isDarkMode ? 'dark' : 'light';
-  }, [isDarkMode]);
+  // useEffect(() => {
+  //   document.body.className = isDarkMode ? 'dark' : 'light';
+  // }, [isDarkMode]);
   return (
     <div className={`layout ${isDarkMode ? 'dark' : 'light'}`}> 
-      <Outlet />
+      <main>
+        <Outlet /> 
+      </main>
     </div>
   )
 }

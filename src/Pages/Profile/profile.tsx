@@ -176,7 +176,7 @@ export default function Profile() {
                       onTouchStart={(e) => handleDrag(e, index, item?.images?.length)}
                     >
                       <img
-                        src={"C:/Users/DELL/Documents/prabhu/social_media_assment/backend/uploads" + item?.[currentImageIndex[index] || 0]}
+                        src={`http://35.154.162.117/backendcode/app/uploads/image/${item?.[currentImageIndex[index] || 0]}`}
                         className="feed-post-img"
                         alt="Post"
                       />

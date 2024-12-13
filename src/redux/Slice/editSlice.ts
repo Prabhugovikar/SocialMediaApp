@@ -20,7 +20,7 @@ export const updateProfile = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}Updatedetails`, {
+      const response = await fetch(`http://13.233.96.187:3000/Updatedetails`, {
         method: 'POST',
         body: formData,
       });
@@ -30,6 +30,8 @@ export const updateProfile = createAsyncThunk(
       }
 
       const data = await response.json();
+      console.log("data",data);
+      localStorage.setItem('username',data?.userdata?.username);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);

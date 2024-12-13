@@ -47,7 +47,7 @@ export const sendMediaData = createAsyncThunk(
         console.log(key, value);
       });
 
-    const response = await fetch(`${process.env.REACT_APP_URL}upload` , {
+    const response = await fetch(`http://13.233.96.187:3000/upload` , {
       method: 'POST',
       body: formData, 
     });

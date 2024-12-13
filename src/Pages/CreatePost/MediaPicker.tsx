@@ -98,7 +98,7 @@ const PostScreen: React.FC = () => {
                 {selectedMedia.length > 0 ? (
                     <>
                         <div className='createpost-back'>
-                            <img src={require("../../assets/back.png")} width={20} height={20} />
+                            <img src={require("../../assets/back.png")} width={20} height={20} onClick={()=>navigate("/Feed")} />
                         </div>
                         <div className="media-index">
                             <p>

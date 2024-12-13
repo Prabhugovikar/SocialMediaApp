@@ -1,5 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+type UserProfile = {
+  Bio: any;
+  _id: string;
+  Email: string;
+  username: string;
+  profileimage: string;
+  bannerimage: string;
+};
+
 type ProfilePost = {
     _id: string;
     user_id: string;
@@ -10,12 +19,14 @@ type ProfilePost = {
   
   type ProfileState = {
     profileData: ProfilePost[] | null;
+    userProfile: UserProfile | null;
     loading: boolean;
     error: string | null;
   };
   
   const initialState: ProfileState = {
     profileData: null,
+    userProfile: null,
     loading: false,
     error: null,
   };
@@ -25,7 +36,7 @@ export const fetchProfileData = createAsyncThunk(
   'profile/fetchProfileData',
   async (userId: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}getUploadById`, {
+      const response = await fetch(`http://13.233.96.187:3000/getUploadById`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,8 +50,11 @@ export const fetchProfileData = createAsyncThunk(
         throw new Error('Failed to fetch profile data');
       }
 
-      const data = await response.json();
-      return data?.data;
+      const result = await response.json();
+      return {
+        profileData: result?.data,
+        userProfile: result?.userprofile[0], 
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -60,7 +74,8 @@ const profileSlice = createSlice({
       })
       .addCase(fetchProfileData.fulfilled, (state, action) => {
         state.loading = false;
-        state.profileData = action.payload;
+        state.profileData = action.payload.profileData;
+        state.userProfile = action.payload.userProfile;
       })
       .addCase(fetchProfileData.rejected, (state, action) => {
         state.loading = false;

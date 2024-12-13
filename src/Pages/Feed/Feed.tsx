@@ -4,51 +4,19 @@ import './feed.css'
 import AnimatedModal from '../../components/AnimatedModal/AnimatedModal';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFeedData } from '../../redux/Slice/feedSlice';
+import { fetchFeedData, likePost,} from '../../redux/Slice/feedSlice';
 import { AppDispatch, RootState } from '../../redux/store';
 import Skeleton from '../../components/Skeleton/Skeleton';
 
-const feedData = [
-  {
-    Profile: require("../../assets/flowergirl.png"),
-    username: "Sakshi Agarwal",
-    caption: "Just arrived in New York City! Excited to explore the sights, sounds, and energy of this amazing place.",
-    likes: 123,
-    timestamp: "2 hours ago",
-    img: [
-      require("../../assets/orangegirl.png"),
-      require("../../assets/girl.png"),
-    ],
-    hastag: '#NYC #Travel'
-  },
-  {
-    Profile: require("../../assets/flowergirl.png"),
-    username: "Nidhi Agarwal",
-    caption: "Just arrived in New York City! Excited to explore the sights, sounds, and energy of this amazing place.",
-    likes: 123,
-    timestamp: "2 day ago",
-    img: [
-      require("../../assets/flowergirl.png"),
-    ],
-    hastag: '#NYC #Travel'
-  },
-  {
-    Profile: require("../../assets/flowergirl.png"),
-    username: "Arav",
-    caption: "Taking a moment to slow down, breathe, and focus on myself. 🌿✨ Self-care isn’t selfish – it’s necessary.",
-    likes: 123,
-    timestamp: "1 day ago",
-    video: require('../../assets/video.mp4'),
-    hastag: '💕 #SelfCare #MeTime #Wellness'
-  }
-]
+
 
 export default function FeedComponent() {
   const dispatch = useDispatch<AppDispatch>();
   const { feedData, loading, error } = useSelector((state: RootState) => state.feed);
   const [loader, setloader] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: number]: number }>({});
+  const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({});
+  const [currentUser, setCurrentUser] = useState<string>('');
   const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
   const [backgroundColors, setBackgroundColors] = useState([]);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -70,28 +38,29 @@ export default function FeedComponent() {
 
   console.log("feedData", feedData);
 
-
-  const handleDrag = (e: React.TouchEvent, itemIndex: number, imageCount: number) => {
-    const threshold = 80; // Swipe threshold
+  const handleDrag = (itemIndex: number, imageCount: number) => {
     let startX: number;
+    const threshold = 50; // Sensitivity for swipe detection
 
-    const handleTouchStart = (event: TouchEvent) => {
+    const handleTouchStart = (event: React.TouchEvent) => {
       startX = event.touches[0].clientX;
     };
 
-    const handleTouchEnd = (event: TouchEvent) => {
+    const handleTouchEnd = (event: React.TouchEvent) => {
       const endX = event.changedTouches[0].clientX;
       const diff = endX - startX;
 
       if (Math.abs(diff) > threshold) {
         setCurrentImageIndex((prev) => {
           const newIndex = { ...prev };
-          const currentIndex = newIndex[itemIndex] || 0;
+          const currentIndex = newIndex[itemIndex] || 0; // Default to 0 if undefined
 
           if (diff > 0 && currentIndex > 0) {
-            newIndex[itemIndex] = currentIndex - 1; // Swipe right
+            // Swipe right (previous image)
+            newIndex[itemIndex] = currentIndex - 1;
           } else if (diff < 0 && currentIndex < imageCount - 1) {
-            newIndex[itemIndex] = currentIndex + 1; // Swipe left
+            // Swipe left (next image)
+            newIndex[itemIndex] = currentIndex + 1;
           }
 
           return newIndex;
@@ -99,14 +68,17 @@ export default function FeedComponent() {
       }
     };
 
-    e.target.addEventListener("touchstart", handleTouchStart);
-    e.target.addEventListener("touchend", handleTouchEnd);
-
-    return () => {
-      e.target.removeEventListener("touchstart", handleTouchStart);
-      e.target.removeEventListener("touchend", handleTouchEnd);
-    };
+    return { handleTouchStart, handleTouchEnd };
   };
+
+
+  // Initialize drag handlers after `handleDrag` is defined
+  const dragHandlers = feedData?.map((_, index) =>
+    handleDrag(index, feedData[index]?.images?.length || 0)
+  );
+
+
+
 
   useEffect(() => {
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
@@ -174,6 +146,68 @@ export default function FeedComponent() {
         return newColors;
       });
     };
+
+    img.onerror = () => {
+      // Handle image load errors or fallback
+      setBackgroundColors((prevColors) => {
+        const newColors = [...prevColors];
+        newColors[index] = '#FFFAEE'; // Default color for posts without valid images
+        return newColors;
+      });
+    };
+  };
+
+  // Optional: Function to handle video file (if videoSrc is provided)
+  const getDominantColorFromVideo = (videoSrc, index) => {
+    const video = document.createElement('video');
+    video.crossOrigin = 'Anonymous'; // Avoid CORS issues
+    video.src = videoSrc;
+    video.onloadeddata = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Get the first frame of the video
+      video.currentTime = 0.5; // Half a second to load a frame
+
+      video.onseeked = () => {
+        // Set canvas size to match video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Draw the video frame on canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Get the image data and calculate average color
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let r = 0, g = 0, b = 0, count = 0;
+        for (let i = 0; i < imageData.length; i += 4) {
+          r += imageData[i];     // Red
+          g += imageData[i + 1]; // Green
+          b += imageData[i + 2]; // Blue
+          count++;
+        }
+
+        r = Math.floor(r / count);
+        g = Math.floor(g / count);
+        b = Math.floor(b / count);
+
+        const rgbaColor = `rgba(${r}, ${g}, ${b}, 0.1)`; // Low-opacity color
+        setBackgroundColors((prevColors) => {
+          const newColors = [...prevColors];
+          newColors[index] = rgbaColor;
+          return newColors;
+        });
+      };
+    };
+
+    video.onerror = () => {
+      // Fallback color if video loading fails
+      setBackgroundColors((prevColors) => {
+        const newColors = [...prevColors];
+        newColors[index] = '#FFFAEE'; // Default color for posts without valid video
+        return newColors;
+      });
+    };
   };
 
 
@@ -181,11 +215,13 @@ export default function FeedComponent() {
     if (feedData) {
       feedData.forEach((item, index) => {
         if (item?.images && item?.images.length > 0) {
-          getDominantColor(item?.[0], index); // Use the first image of the post
+          getDominantColor(item?.images[0], index); // Use the first image of the post
+        } else if (item?.video) {
+          getDominantColorFromVideo(item?.video, index); // Handle video file if available
         } else {
           setBackgroundColors((prevColors) => {
             const newColors = [...prevColors];
-            newColors[index] = '#FFFAEE'; // Default color for posts without images
+            newColors[index] = '#F7EBFF'; // Default color for posts without images or video
             return newColors;
           });
         }
@@ -229,13 +265,13 @@ export default function FeedComponent() {
   }
 
   const shareToSocialMedia = (platform: string) => {
-    const postId = selectedItem?._id; 
-    const url = `https://connectambu.netlify.app/Feed/${postId}`;  // Get the first image URL
+    const postId = selectedItem?._id;
+    const url = `http://13.233.96.187/${postId}`;  // Get the first image URL
     const text = selectedItem?.text || '';  // Get the caption text for the post
     console.log("url", url);
     console.log("text", text);
 
-    
+
     let shareUrl = '';
 
     switch (platform) {
@@ -275,6 +311,39 @@ export default function FeedComponent() {
   };
 
 
+ 
+
+  const handleLike =async (postId: string,) => {
+    const UserId = localStorage.getItem('userId');
+    
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+        "user_id": UserId,
+        "post_id": postId
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow' as RequestRedirect
+      };
+      const response = await fetch(`http://13.233.96.187:3000/likepost`,requestOptions);
+      const result = await response.json();
+      console.log("liked result",result);
+      if(!response.ok) {
+        throw new Error('Failed to like post');
+      }
+      dispatch(likePost({ postId, UserId }));
+    } catch (error) {
+       console.log('error',error);
+    }
+  };
+
+
   return (
     <div className='feed'>
       <Navbar />
@@ -299,15 +368,15 @@ export default function FeedComponent() {
         ) : (
           <>
             {feedData?.map((item, index) => (
-              <div className='feed-post-conatiner' style={{ backgroundColor: backgroundColors[index] || '#FFFAEE' }}
-                key={index}
+              <div className='feed-post-conatiner' style={{ backgroundColor: '#F7EBFF' }} key={index}
+
               >
                 <div className='feed-posts-header'>
                   <div className='feed-post-profile'>
-                    <img src={'http://35.154.162.117/backendcode/app/uploads/image/' + item?.images} className='feed-profile-img' />
+                    <img src={'http://13.233.96.187/backendcode/app/src/image/' + item?.userDetails?.profileimage} className='feed-profile-img' />
                   </div>
                   <div className='feed-post-name'>
-                    <span>{'item?.'}</span>
+                    <span>{item?.userDetails?.username}</span>
                     <span>{timeAgo(item?.createdAt)}</span>
                   </div>
                 </div>
@@ -316,23 +385,25 @@ export default function FeedComponent() {
                   {/* <span>{item?.hastag}</span> */}
                 </div>
 
-                <div className='feed-post-media'>
-                  {item?.images && item?.images?.length > 0 ? (
+                <div className="feed-post-media">
+                  {item.images && item.images.length > 0 ? (
                     <div
                       className="image-container"
-                      onTouchStart={(e) => handleDrag(e, index, item?.images?.length)}
+                      onTouchStart={(e) => dragHandlers[index].handleTouchStart(e)}
+                      onTouchEnd={(e) => dragHandlers[index].handleTouchEnd(e)}
                     >
                       <img
-                        src={item?.[currentImageIndex[index] || 0]}
+                        src={`http://13.233.96.187/backendcode/app/src/image/${item.images[currentImageIndex[index] || 0]}`}
                         className="feed-post-img"
-                        alt="Post"
+                        alt={`Post image ${currentImageIndex[index] + 1}`}
                       />
-                      {item?.images?.length > 1 && ( // Show index only if there are more than 1 image
+                      {item.images.length > 1 && (
                         <div className="image-index">
-                          {((currentImageIndex[index] || 0) + 1)} / {item?.images?.length}
+                          {(currentImageIndex[index] || 0) + 1} / {item.images.length}
                         </div>
                       )}
                     </div>
+
                   ) : item.video ? (
                     <video
                       ref={(el) => (videoRefs.current[index] = el)}
@@ -347,8 +418,12 @@ export default function FeedComponent() {
 
                 <div className='feed-post-footer'>
                   <div className='feed-post-likes'>
-                    <img src={require("../../assets/like.png")} width={16} height={16} />
-                    {/* <span>{item?.likes}</span> */}
+                    {item?.isLiked ? (
+                      <img src={require("../../assets/like.png")} width={16} height={16} onClick={()=>handleLike(item?._id)} />
+                    ) : (
+                      <img src={require("../../assets/nocolor_like.png")} width={16} height={16} onClick={()=>handleLike(item?._id)} />
+                    )}
+                    <span>{item?.likes?.length}</span>
                   </div>
                   <div className='feed-post-share' onClick={() => openModal(item)}>
                     <img src={require("../../assets/share.png")} width={16} height={16} />

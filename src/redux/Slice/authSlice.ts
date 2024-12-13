@@ -21,7 +21,7 @@ export const loginWithGoogle = createAsyncThunk(
                 redirect: "follow"as RequestRedirect, 
             };
             console.log('raw',raw);
-            const response = await fetch(`${process.env.REACT_APP_URL}Login`,requestOptions);
+            const response = await fetch(`http://13.233.96.187:3000/Login`,requestOptions);
             const data = await response.json();
             if (!response.ok) {
                 throw new Error("Failed to log in with backend");

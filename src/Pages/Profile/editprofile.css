@@ -20,6 +20,21 @@
     object-fit: cover;
 }
 
+.backarroe-editprofile{
+    position: absolute;
+    left: 10px;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.backarroe-editprofile>span {
+    font-family: "KarlaBold";
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
 
 .profile-edit-banner-pencil {
     margin-right: 20px;
@@ -115,6 +130,7 @@ flex-direction: column;
     justify-content: center;
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 200px;
 }
 
 
@@ -130,6 +146,7 @@ flex-direction: column;
     border-radius: 36px;
     border: none;
     font-family: "KarlaBold";
+
 }
 
 

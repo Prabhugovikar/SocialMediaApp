@@ -69,7 +69,7 @@ const MediaPreviewScreen: React.FC = () => {
     return (
         <div className="preview-screen">
             <div>
-                <div className='preview-screen-head'>
+                <div className='preview-screen-head' onClick={()=>navigate(-1)}>
                     {isDarkMode ? (
                         <img src={require("../../assets/back.png")} width={20} height={20} />
                     ) : (

@@ -4,13 +4,21 @@ import { useTheme } from '../../ThemeContext';
 import { AppDispatch, } from '../../redux/store';
 import { useDispatch } from 'react-redux';
 import { updateProfile } from '../../redux/Slice/editSlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Editprofile() {
     const dispatch = useDispatch<AppDispatch>();
+    const location = useLocation();
+    const prevdata = location?.state
+    console.log("prevdata", prevdata);
+    const prevBio = prevdata?.Bio ;
+    const prevname = prevdata?.username;
+    const UserName = localStorage.getItem('username');
+    const finalname = prevname || UserName;
+    const ProfileImage = localStorage.getItem('profileImage');
     const { isDarkMode } = useTheme();
-    const [name, setName] = useState('');
-    const [bio, setBio] = useState('');
+    const [name, setName] = useState(finalname);
+    const [bio, setBio] = useState(prevBio);
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [bannerImage, setBannerImage] = useState<File | null>(null);
     const [error, setError] = useState('');
@@ -34,12 +42,12 @@ export default function Editprofile() {
         formData.append('user_id', userId);
         formData.append('username', name);
         formData.append('Bio', bio);
-        if (profileImage) formData.append('profileImage', profileImage);
-        if (bannerImage) formData.append('bannerImage', bannerImage);
+        // if (profileImage) formData.append('profileImage', profileImage);
+        // if (bannerImage) formData.append('bannerImage', bannerImage);
 
         try {
             await dispatch(updateProfile(formData)).unwrap();
-            // navigate('/profile');  
+            navigate('/profile');  
         } catch (err) {
             setError('Failed to update profile. Please try again.');
         }
@@ -56,12 +64,15 @@ export default function Editprofile() {
                             style={{ display: 'none' }} 
                             id="bannerImageInput"
                         />
-                        <img src={bannerImage ? URL.createObjectURL(bannerImage) : require("../../assets/profileBackground.png")} className='profile-banner-img' />
-
+                        <img src={require("../../assets/profileBackground.png")} className='profile-banner-img' />
+{/*                     
                         <div className='profile-edit-banner-pencil' onClick={() => document.getElementById('bannerImageInput')?.click()}>
                             <img src={require("../../assets/HiPencil.png")} width='16' height='16' />
+                        </div> */}
+                        <div className='backarroe-editprofile'>
+                            <img src={require("../../assets/white_backarrow.png")} width='16' height='16' onClick={() => navigate('/profile')} />
+                            <span>Edit Profile</span>
                         </div>
-
                     </div>
                     <div className='profile-edit-wrapper'>
                         <div className='profile-header-userprofile'>
@@ -71,11 +82,11 @@ export default function Editprofile() {
                                 style={{ display: 'none' }} 
                                 id="profileImageInput"
                             />
-                            <img src={profileImage ? URL.createObjectURL(profileImage) : require("../../assets/girl.png")} className='user-profile' />
+                            <img src={ProfileImage} className='user-profile' />
                         </div>
-                        <div className='editprofile-icon-conatiner' onClick={() => document.getElementById('profileImageInput')?.click()}>
+                        {/* <div className='editprofile-icon-conatiner' onClick={() => document.getElementById('profileImageInput')?.click()}>
                             <img src={require("../../assets/HiPencil.png")} width='16' height='16' />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

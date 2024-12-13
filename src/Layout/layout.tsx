@@ -10,9 +10,7 @@ export default function Layout() {
   // }, [isDarkMode]);
   return (
     <div className={`layout ${isDarkMode ? 'dark' : 'light'}`}> 
-      <main>
         <Outlet /> 
-      </main>
     </div>
   )
 }

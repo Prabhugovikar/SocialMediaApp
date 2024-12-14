@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeedData, likePost,} from '../../redux/Slice/feedSlice';
 import { AppDispatch, RootState } from '../../redux/store';
 import Skeleton from '../../components/Skeleton/Skeleton';
+import { useTheme } from '../../ThemeContext';
 
 
 
@@ -17,9 +18,10 @@ export default function FeedComponent() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({});
   const [currentUser, setCurrentUser] = useState<string>('');
-  const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
+  const videoRefs = useRef<Record<number, HTMLVideoElement>>({});
   const [backgroundColors, setBackgroundColors] = useState([]);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const {isDarkMode} = useTheme();
   const navigate = useNavigate();
 
   const openModal = (item) => {
@@ -85,26 +87,29 @@ export default function FeedComponent() {
       entries.forEach((entry) => {
         const video = entry.target as HTMLVideoElement;
         if (entry.isIntersecting) {
-          video.play(); // Start playing when visible
+          console.log(`Playing: ${video.src}`);
+          video.play().catch((err) => console.error("Play error:", err));
         } else {
-          video.pause(); // Pause when not visible
+          console.log(`Pausing: ${video.src}`);
+          video.pause();
         }
       });
     };
-
-    const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.5, // Trigger when 50% of the video is in view
-    });
-
-    // Observe all video elements
+  
+    const observer = new IntersectionObserver(handleIntersection, { threshold: 0.5 });
+  
+    // Ensure all video elements are observed
     Object.values(videoRefs.current).forEach((video) => {
-      if (video instanceof HTMLVideoElement) observer.observe(video);
+      if (video instanceof HTMLVideoElement) {
+        console.log("Observing video:", video);
+        observer.observe(video);
+      }
     });
-
+  
     return () => {
-      observer.disconnect(); // Clean up observer
+      observer.disconnect();
     };
-  }, []);
+  }, [feedData]);
 
 
   const getDominantColor = (imageSrc, index) => {
@@ -367,8 +372,8 @@ export default function FeedComponent() {
 
         ) : (
           <>
-            {feedData?.map((item, index) => (
-              <div className='feed-post-conatiner' style={{ backgroundColor: '#F7EBFF' }} key={index}
+            {feedData?.slice()?.reverse()?.map((item, index) => (
+              <div className='feed-post-conatiner' style={{ backgroundColor: isDarkMode ? '#708090' : '#F7EBFF' }} key={index}
 
               >
                 <div className='feed-posts-header'>
@@ -406,13 +411,16 @@ export default function FeedComponent() {
 
                   ) : item.video ? (
                     <video
-                      ref={(el) => (videoRefs.current[index] = el)}
-                      className="feed-post-video"
-                      src={item.video}
-                      muted
-                      playsInline
-                      loop
-                    />
+                    ref={(el) => {
+                      if (el) videoRefs.current[index] = el;
+                    }}
+                    className="feed-post-video"
+                    src={`http://13.233.96.187/backendcode/app/src/video/${item.video}`}
+                    //  src="http://13.233.96.187/backendcode/app/src/video/1734178819241.mp4"
+                    // muted
+                    playsInline
+                    loop
+                  />
                   ) : null}
                 </div>
 

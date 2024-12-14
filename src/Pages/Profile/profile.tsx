@@ -11,7 +11,7 @@ export default function Profile() {
   const { profileData, userProfile, loading, error } = useSelector((state: RootState) => state.profile);
   const { isDarkMode } = useTheme();
   const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: number]: number }>({});
-  const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
+ const videoRefs = useRef<Record<number, HTMLVideoElement>>({});
   const navigate = useNavigate();
 
   const UserName = localStorage.getItem('username');
@@ -71,26 +71,29 @@ export default function Profile() {
       entries.forEach((entry) => {
         const video = entry.target as HTMLVideoElement;
         if (entry.isIntersecting) {
-          video.play(); // Start playing when visible
+          console.log(`Playing: ${video.src}`);
+          video.play().catch((err) => console.error("Play error:", err));
         } else {
-          video.pause(); // Pause when not visible
+          console.log(`Pausing: ${video.src}`);
+          video.pause();
         }
       });
     };
-
-    const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.5, // Trigger when 50% of the video is in view
-    });
-
-    // Observe all video elements
+  
+    const observer = new IntersectionObserver(handleIntersection, { threshold: 0.5 });
+  
+    // Ensure all video elements are observed
     Object.values(videoRefs.current).forEach((video) => {
-      if (video instanceof HTMLVideoElement) observer.observe(video);
+      if (video instanceof HTMLVideoElement) {
+        console.log("Observing video:", video);
+        observer.observe(video);
+      }
     });
-
+  
     return () => {
-      observer.disconnect(); // Clean up observer
+      observer.disconnect();
     };
-  }, []);
+  }, [profileData]);
 
 
   return (
@@ -154,8 +157,8 @@ export default function Profile() {
                     <video
                       ref={(el) => (videoRefs.current[index] = el)}
                       className="feed-post-video-2"
-                      src={item.video}
-                      muted
+                      src={`http://13.233.96.187/backendcode/app/src/video/${item.video}`}
+                      // muted
                       playsInline
                       loop
                     />

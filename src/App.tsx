@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, HashRouter } from 'react-router-dom';
 import { ThemeProvider } from './ThemeContext';
 import Layout from './Layout/layout';
 
@@ -18,7 +18,7 @@ export default function App() {
   return (
     <div>
       <ThemeProvider children={undefined}>
-        <BrowserRouter>
+        <HashRouter>
         <Suspense fallback={<div className='loader-center'><div className='loader'></div></div>}>
           <Routes>
             <Route index path='/' element={<Login />} />
@@ -31,7 +31,7 @@ export default function App() {
             </Route>
           </Routes>
           </Suspense>
-        </BrowserRouter>
+        </HashRouter>
       </ThemeProvider>
     </div>
   )

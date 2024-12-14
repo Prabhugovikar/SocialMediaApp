@@ -373,7 +373,7 @@ export default function FeedComponent() {
               >
                 <div className='feed-posts-header'>
                   <div className='feed-post-profile'>
-                    <img src={'http://13.233.96.187/backendcode/app/src/image/' + item?.userDetails?.profileimage} className='feed-profile-img' />
+                    <img src={item?.userDetails?.profileimage} className='feed-profile-img' />
                   </div>
                   <div className='feed-post-name'>
                     <span>{item?.userDetails?.username}</span>

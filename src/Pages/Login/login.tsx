@@ -13,12 +13,6 @@ export default function Login() {
     const { loading, error } = useSelector((state: RootState) => state.auth);
     // toast(error);
     const handleGoogleLogin = async () => {
-        const User_id = localStorage.getItem('userId');
-        if(User_id) {
-            navigate("/Feed",{
-                replace: true
-            });
-        }
         const resultAction = await dispatch(loginWithGoogle());
         if (loginWithGoogle.fulfilled.match(resultAction)) {
             console.log("resultAction", resultAction);
@@ -91,6 +85,9 @@ export default function Login() {
                             </div>
                         )}
                         {error && <p className="error">{error}</p>}
+                    </div>
+                    <div className="developed-by-prabhu">
+                        <span>Developed by Prabhu Govikar</span>
                     </div>
                 </div>
             </div>
